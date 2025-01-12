@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Log</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Download Log</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>File Name</th>
+                <th>Date</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody id="log-table">
+            <!-- Log rows will be populated dynamically -->
+        </tbody>
+    </table>
+    <button onclick="window.location.href='/'">Return to Home</button>
+
+    <script>
+        // Fetch and display the download log
+        function fetchDownloadLog() {
+            fetch('/download-log')
+                .then(response => response.json())
+                .then(logs => {
+                    const tableBody = document.getElementById('log-table');
+                    tableBody.innerHTML = ''; // Clear any existing rows
+
+                    logs.forEach(log => {
+                        const [date, time] = log.timestamp.split(' '); // Split timestamp
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${log.filename}</td>
+                            <td>${date}</td>
+                            <td>${time}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(err => {
+                    console.error('Error fetching log:', err);
+                });
+        }
+
+        // Fetch the log on page load
+        fetchDownloadLog();
+    </script>
+</body>
+</html>
